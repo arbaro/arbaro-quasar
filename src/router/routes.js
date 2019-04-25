@@ -9,8 +9,23 @@ const routes = [
         component: () => import("pages/Profile.vue")
       },
       {
-        path: "organisation/:account",
-        component: () => import("pages/Organisation.vue")
+        path: "new",
+        component: () => import("pages/New.vue")
+      }
+    ]
+  },
+  {
+    path: "/organisation/:account",
+    component: () => import("layouts/OrgLayout.vue"),
+    children: [
+      { path: "", component: () => import("pages/Organisation.vue") },
+      {
+        path: "team",
+        component: () => import("pages/Team.vue")
+      },
+      {
+        path: "entries",
+        component: () => import("pages/Entries.vue")
       }
     ]
   }

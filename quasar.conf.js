@@ -47,7 +47,12 @@ module.exports = function (ctx) {
         'QDialog',
         'QInput',
         'QSeparator',
-        'QSpace'
+        'QSpace',
+        'QPageSticky',
+        'QMarkupTable',
+        'QStepper',
+        'QStep',
+        'QStepperNavigation'
       ],
 
       directives: [
