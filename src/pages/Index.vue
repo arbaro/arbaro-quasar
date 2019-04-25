@@ -1,0 +1,113 @@
+<template>
+  <q-page padding>
+    <q-dialog v-model="donationPrompt" persistent>
+      <q-card style="min-width: 400px">
+        <q-card-section>
+          <div class="text-h6">Make a donation</div>
+        </q-card-section>
+        <q-card-section>
+          <q-input
+            v-model="donationAmount"
+            :lazy-rules="true"
+            type="number"
+            suffix="EOS"
+            label="Donation Amount"
+          />
+        </q-card-section>
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="Cancel" v-close-popup />
+          <q-btn flat label="Donate" @click="donateTrigger" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+    <div class="row flex-center q-col-gutter-xl">
+      <div class="col-xs-12 col-sm-4 flex flex-center">
+        <q-card class="my-card bg-primary text-white col">
+          <q-card-section>
+            <div class="text-h6">Arbaro</div>
+            <div class="text-subtitle2">by John Williamson</div>
+          </q-card-section>
+          <q-card-section>
+            {{ about }}
+          </q-card-section>
+
+          <q-separator dark />
+
+          <q-card-actions>
+            <q-btn flat @click="aboutPrompt = true">About</q-btn>
+            <q-btn
+              :disable="!$eosio.data.authed"
+              flat
+              @click="donationPrompt = true"
+              >Donate</q-btn
+            >
+            <q-btn flat @click="refresh">Refresh</q-btn>
+          </q-card-actions>
+        </q-card>
+      </div>
+
+      <div class="col-xs-12 col-sm-4">
+        <q-list bordered separator>
+          <q-item-label header>Organisations</q-item-label>
+          <q-item
+            v-for="org in orgs"
+            :key="org.key"
+            clickable
+            @click="$router.push(`organisation/${org.key}`)"
+            v-ripple
+          >
+            <q-item-section>
+              <q-item-label>{{ org.key }}</q-item-label>
+              <!-- <q-item-label caption>{{ lorem }}</q-item-label> -->
+            </q-item-section>
+            <!-- <q-item-section side top> -->
+            <!-- 1 min ago -->
+            <!-- <q-badge color="teal" label="10k" /> -->
+            <!-- </q-item-section> -->
+          </q-item>
+        </q-list>
+      </div>
+    </div>
+  </q-page>
+</template>
+
+<style></style>
+
+<script>
+export default {
+  name: "PageIndex",
+  data: function() {
+    return {
+      lorem: `Lorem ipsum dolor sit, amet consectetur
+          adipisicing elit. Aperiam nulla laboriosam iure nisi mollitia nesciunt
+          deserunt quaerat adipisci, optio laborum iste odit, illum dignissimos
+          blanditiis eligendi perferendis facere vitae possimus.`,
+      url: "https://johnwilliamson.io/images/avatar.jpg",
+      about: "Create your own decentralised project/organisation.",
+      friendlyname: "John Williamson",
+      donationPrompt: false,
+      donationAmount: "",
+      orgs: []
+    };
+  },
+  created: function() {
+    this.refresh();
+  },
+  methods: {
+    async donateTrigger() {
+      await this.$eos.transfer(
+        "johnn.y",
+        `${Number(this.donationAmount).toFixed(4)} EOS`,
+        "ty"
+      );
+    },
+    async refresh() {
+      await this.fetchOrgs();
+    },
+    async fetchOrgs() {
+      const result = await this.$eos.getTable("orgs");
+      this.orgs = result.rows;
+    }
+  }
+};
+</script>
