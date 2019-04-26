@@ -76,6 +76,7 @@
         @click="workPrompt = true"
       />
     </q-page-sticky>
+    <q-btn @click="go" label="Go" />
   </q-page>
 </template>
 
@@ -99,6 +100,25 @@ export default {
     this.refresh();
   },
   methods: {
+    go: async function() {
+      // this.$dfuse
+      //   .streamActionTraces(
+      //     { accounts: "eosio.token", action_names: "transfer" },
+      //     message => {
+      //       if (message.type === "action_trace") {
+      //         const { from, to, quantity, memo } = message.data.trace.act.data;
+      //         console.log(`Transfer [${from} -> ${to}, ${quantity}] (${memo})`);
+      //         this.roles.push({
+      //           key: from,
+      //           worker: to
+      //         });
+      //       }
+      //     }
+      //   )
+      //   .catch(error => {
+      //     console.log("An error occurred.", error);
+      //   });
+    },
     refresh: async function(delay = 0) {
       await wait(delay);
       await this.fetchTeamMembers();

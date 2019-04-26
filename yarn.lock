@@ -727,6 +727,13 @@
     lodash "^4.17.11"
     to-fast-properties "^2.0.0"
 
+"@dfuse/client@^0.2.1":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@dfuse/client/-/client-0.2.1.tgz#49fd113a8aa00091a3f1be7d6885cfebb94eef7a"
+  integrity sha512-bLnBPabA9RQZ44oeS/SEVoqQ5KKiMbsxQxu7RaoAaONY05vgAAuH69x6c+p8mZxA9U893W6SLyts88+znTlG9A==
+  dependencies:
+    debug "^4.1.0"
+
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@mrmlnc/readdir-enhanced/-/readdir-enhanced-2.2.1.tgz#524af240d1a360527b730475ecfa1344aa540dde"

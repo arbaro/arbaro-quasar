@@ -106,7 +106,7 @@ export default {
   methods: {
     createTimeEntry: async function() {
       await this.$eos.tx("claimtime", {
-        role: "wa",
+        role: "dev",
         dechours: this.decHours,
         notes: this.notes
       });
