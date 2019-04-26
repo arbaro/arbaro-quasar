@@ -5,15 +5,7 @@
         <q-card-section>
           <div class="text-h6">Invite Team Member</div>
         </q-card-section>
-        <q-card-section>
-          <q-input
-            v-model="roleIdField"
-            :rules="[this.$eos.isName, roleIdDoesNotExit]"
-            :lazy-rules="true"
-            label="Role ID"
-            hint="Acts as unique ID, can be anything"
-          />
-        </q-card-section>
+
         <q-card-section>
           <q-input
             v-model="eosAccountField"
@@ -24,7 +16,6 @@
         <q-card-section>
           <q-input
             v-model="payRateField"
-            type="number"
             label="Pay Rate"
             placeholder="Tokens awarded per hour"
           />
@@ -41,7 +32,6 @@
           <thead>
             <tr>
               <th class="text-left">Worker</th>
-              <th class="text-left">Role ID</th>
               <th class="text-left">Pay Rate</th>
               <th class="text-left">Shares Earned</th>
               <th class="text-left">Role Accepted</th>
@@ -49,10 +39,9 @@
           </thead>
           <tbody>
             <tr v-for="role in roles" :key="role.key">
-              <td class="text-left">{{ role.worker }}</td>
               <td class="text-left">{{ role.key }}</td>
               <td class="text-left">{{ role.payrate }}</td>
-              <td class="text-left">{{ role.shares }}</td>
+              <td class="text-left">{{ role.earned }}</td>
               <td class="text-left">
                 <q-btn
                   color="primary"
@@ -89,7 +78,6 @@ export default {
   name: "PageIndex",
   data: function() {
     return {
-      roleIdField: "",
       eosAccountField: "",
       payRateField: "",
       workPrompt: false,
@@ -101,17 +89,26 @@ export default {
   },
   methods: {
     go: async function() {
+      console.log("go hit");
+
+      const response = await this.$dfuse.searchTransactions(
+        "account:labelaarbar1 action:claimtime",
+        { limit: 10 }
+      );
+      console.log(response, "was response.");
+
       // this.$dfuse
       //   .streamActionTraces(
-      //     { accounts: "eosio.token", action_names: "transfer" },
+      //     { accounts: "labelaarbar1", action_names: "ct" },
       //     message => {
       //       if (message.type === "action_trace") {
-      //         const { from, to, quantity, memo } = message.data.trace.act.data;
-      //         console.log(`Transfer [${from} -> ${to}, ${quantity}] (${memo})`);
-      //         this.roles.push({
-      //           key: from,
-      //           worker: to
-      //         });
+      //         console.log(message.data.trace.act.data);
+      //         // const { from, to, quantity, memo } = message.data.trace.act.data;
+      //         // console.log(`Transfer [${from} -> ${to}, ${quantity}] (${memo})`);
+      //         // this.roles.push({
+      //         //   key: from,
+      //         //   worker: to
+      //         // });
       //       }
       //     }
       //   )
@@ -132,24 +129,27 @@ export default {
         return true;
       }
     },
-    acceptRole: async function(role) {
-      await this.$eos.tx("acceptrole", { role });
+    acceptRole: async function(worker) {
+      await this.$eos.tx("acceptrole", {
+        org: this.$route.params.account,
+        worker
+      });
       await this.refresh(1000);
     },
     inviteTeamMember: async function() {
       await this.$eos.tx("createrole", {
         org: this.$route.params.account,
         worker: this.eosAccountField,
-        role: this.roleIdField,
         payrate: this.payRateField
       });
       await this.refresh(1000);
     },
     fetchTeamMembers: async function() {
-      const tableResult = await this.$eos.getTable("roles");
-      this.roles = tableResult.rows.filter(
-        role => role.org == this.$route.params.account
+      const tableResult = await this.$eos.getTable(
+        "roles",
+        this.$route.params.account
       );
+      this.roles = tableResult.rows;
     }
   }
 };

@@ -34,37 +34,14 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td class="text-left">thekellygang</td>
-              <td class="text-left">2 hours</td>
-              <td class="text-left">200.0000 ABC</td>
+            <tr v-for="entrie in entries" :key="entrie.transactionId">
+              <td class="text-left">{{ entrie.worker }}</td>
+              <td class="text-left">{{ entrie.time }}</td>
               <td class="text-left">
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                Molestiae adipisci veritatis eius commodi nisi animi inventore
-                porro a asperiores? Vitae perspiciatis voluptatibus ex
-                voluptates sequi quo ratione laboriosam laborum iusto?
+                {{ Number(entrie.reward.amount) }} {{ entrie.reward.symbol }}
               </td>
-            </tr>
-            <tr>
-              <td class="text-left">thekellygang</td>
-              <td class="text-left">2 hours</td>
-              <td class="text-left">200.0000 ABC</td>
               <td class="text-left">
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                Molestiae adipisci veritatis eius commodi nisi animi inventore
-                porro a asperiores? Vitae perspiciatis voluptatibus ex
-                voluptates sequi quo ratione laboriosam laborum iusto?
-              </td>
-            </tr>
-            <tr>
-              <td class="text-left">thekellygang</td>
-              <td class="text-left">2 hours</td>
-              <td class="text-left">200.0000 ABC</td>
-              <td class="text-left">
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                Molestiae adipisci veritatis eius commodi nisi animi inventore
-                porro a asperiores? Vitae perspiciatis voluptatibus ex
-                voluptates sequi quo ratione laboriosam laborum iusto?
+                {{ entrie.notes }}
               </td>
             </tr>
           </tbody>
@@ -94,22 +71,46 @@
 <style></style>
 
 <script>
+import wait from "waait";
+import moment from "moment";
+
 export default {
   name: "PageIndex",
   data: function() {
     return {
       timePrompt: false,
       notes: "",
-      decHours: ""
+      decHours: "",
+      entries: []
     };
   },
+  created: function() {
+    this.refresh();
+  },
+
   methods: {
+    refresh: async function(delay) {
+      if (delay) await wait(delay);
+      await this.fetchWorkEntries();
+    },
+    fetchWorkEntries: async function() {
+      const entries = await this.$api.getWorkEntries(
+        this.$route.params.account
+      );
+
+      this.entries = entries.map(entry => ({
+        ...entry,
+        time: moment.duration(entry.minutes, "minutes").humanize()
+      }));
+    },
     createTimeEntry: async function() {
       await this.$eos.tx("claimtime", {
-        role: "dev",
-        dechours: this.decHours,
+        worker: this.$eosio.data.accountName,
+        org: this.$route.params.account,
+        minutes: this.decHours,
         notes: this.notes
       });
+      await this.refresh(2000);
     }
   }
 };

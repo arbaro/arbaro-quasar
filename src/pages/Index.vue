@@ -100,7 +100,7 @@ export default {
       orgs: []
     };
   },
-  created: function() {
+  created: async function() {
     this.refresh();
   },
   methods: {
