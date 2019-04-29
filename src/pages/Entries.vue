@@ -6,7 +6,7 @@
           <div class="text-h6">Create time entry</div>
         </q-card-section>
         <q-card-section>
-          <q-input v-model="decHours" type="number" label="Dec hours" />
+          <q-input v-model="minutes" type="number" label="Minutes worked" />
         </q-card-section>
         <q-card-section>
           <q-input
@@ -28,7 +28,7 @@
           <thead>
             <tr>
               <th class="text-left">Worker</th>
-              <th class="text-left">Hours</th>
+              <th class="text-left">Time</th>
               <th class="text-left">Awarded</th>
               <th class="text-left">Notes</th>
             </tr>
@@ -80,7 +80,7 @@ export default {
     return {
       timePrompt: false,
       notes: "",
-      decHours: "",
+      minutes: "",
       entries: []
     };
   },
@@ -107,7 +107,7 @@ export default {
       await this.$eos.tx("claimtime", {
         worker: this.$eosio.data.accountName,
         org: this.$route.params.account,
-        minutes: this.decHours,
+        minutes: this.minutes,
         notes: this.notes
       });
       await this.refresh(2000);

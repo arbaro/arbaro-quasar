@@ -15,7 +15,7 @@
             <div class="text-h6">About</div>
           </q-card-section>
           <q-card-section>
-            {{ lorem }}
+            {{ about }}
           </q-card-section>
         </q-card>
       </div>
@@ -28,7 +28,7 @@
             <div class="text-h6">{{ friendlyname }}</div>
           </q-card-section>
           <q-card-section>
-            {{ lorem }}
+            {{ about }}
           </q-card-section>
         </q-card>
       </div>
@@ -37,14 +37,14 @@
         <q-list bordered separator>
           <q-item-label header>Recent Activity</q-item-label>
 
-          <q-item clickable v-ripple>
+          <q-item v-for="entrie in entries" :key="entrie.transactionId">
             <q-item-section>
-              <q-item-label>Contoso</q-item-label>
-              <q-item-label caption>{{ lorem }}</q-item-label>
+              <q-item-label>{{ entrie.orgFriendly }}</q-item-label>
+              <q-item-label caption> {{ entrie.notes }}</q-item-label>
             </q-item-section>
             <q-item-section side top>
-              1 min ago
-              <q-badge color="teal" label="10k" />
+              {{ entrie.when }}
+              <q-badge color="primary" :label="entrie.timeSpent" />
             </q-item-section>
           </q-item>
         </q-list>
@@ -56,17 +56,40 @@
 <style></style>
 
 <script>
+import moment from "moment";
+
 export default {
   name: "PageIndex",
   data: function() {
     return {
-      lorem: `Lorem ipsum dolor sit, amet consectetur
-          adipisicing elit. Aperiam nulla laboriosam iure nisi mollitia nesciunt
-          deserunt quaerat adipisci, optio laborum iste odit, illum dignissimos
-          blanditiis eligendi perferendis facere vitae possimus.`,
+      entries: [],
+      about: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Reprehenderit dicta, maiores, quod sapiente nam error accusantium id blanditiis temporibus nihil ipsam minima excepturi vitae. Officiis in id omnis necessitatibus soluta.`,
       url: "https://johnwilliamson.io/images/avatar.jpg",
       friendlyname: "John Williamson"
     };
+  },
+  created: function() {
+    this.refresh();
+  },
+  methods: {
+    async refresh() {
+      await this.fetchProfile();
+    },
+    async fetchProfile() {
+      const result = await this.$api.getProfile(this.$route.params.account);
+      this.friendlyname = result.friendly;
+      this.url = result.pic;
+      this.about = result.about;
+
+      this.entries = result.entries.map(entry => ({
+        ...entry,
+        when: moment
+          .utc(entry.blockTime)
+          .local()
+          .fromNow(),
+        timeSpent: moment.duration(entry.minutes, "minutes").humanize()
+      }));
+    }
   }
 };
 </script>

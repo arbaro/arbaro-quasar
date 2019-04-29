@@ -16,8 +16,9 @@
         <q-card-section>
           <q-input
             v-model="payRateField"
+            :suffix="symbolName"
             label="Pay Rate"
-            placeholder="Tokens awarded per hour"
+            placeholder="Tokens awarded per minute"
           />
         </q-card-section>
         <q-card-actions align="right" class="text-primary">
@@ -65,7 +66,6 @@
         @click="workPrompt = true"
       />
     </q-page-sticky>
-    <q-btn @click="go" label="Go" />
   </q-page>
 </template>
 
@@ -81,6 +81,8 @@ export default {
       eosAccountField: "",
       payRateField: "",
       workPrompt: false,
+      symbolName: null,
+      symbolPrecision: null,
       roles: []
     };
   },
@@ -88,37 +90,20 @@ export default {
     this.refresh();
   },
   methods: {
-    go: async function() {
-      console.log("go hit");
-
-      const response = await this.$dfuse.searchTransactions(
-        "account:labelaarbar1 action:claimtime",
-        { limit: 10 }
-      );
-      console.log(response, "was response.");
-
-      // this.$dfuse
-      //   .streamActionTraces(
-      //     { accounts: "labelaarbar1", action_names: "ct" },
-      //     message => {
-      //       if (message.type === "action_trace") {
-      //         console.log(message.data.trace.act.data);
-      //         // const { from, to, quantity, memo } = message.data.trace.act.data;
-      //         // console.log(`Transfer [${from} -> ${to}, ${quantity}] (${memo})`);
-      //         // this.roles.push({
-      //         //   key: from,
-      //         //   worker: to
-      //         // });
-      //       }
-      //     }
-      //   )
-      //   .catch(error => {
-      //     console.log("An error occurred.", error);
-      //   });
-    },
     refresh: async function(delay = 0) {
       await wait(delay);
       await this.fetchTeamMembers();
+      await this.fetchOrg();
+    },
+    fetchOrg: async function() {
+      const result = await this.$eos.getTable("orgs");
+      const org = result.rows.filter(
+        x => x.key === this.$route.params.account
+      )[0];
+      if (!org) this.$q.notify("Failed to find org");
+      console.log(org);
+      this.symbolName = org.symbol.split(",")[1];
+      this.symbolPrecision = org.symbol.split(",")[0];
     },
     roleIdDoesNotExit: async function(input) {
       const result = await this.$eos.getTable("roles");
@@ -140,7 +125,7 @@ export default {
       await this.$eos.tx("createrole", {
         org: this.$route.params.account,
         worker: this.eosAccountField,
-        payrate: this.payRateField
+        payrate: `${Number(this.payRateField).toFixed(4)} ${this.symbolName}`
       });
       await this.refresh(1000);
     },

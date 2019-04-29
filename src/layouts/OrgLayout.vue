@@ -17,7 +17,7 @@
     <q-page-container>
       <div class="row ">
         <div class="offset-sm-1 col-2 ">
-          <q-list bordered padding class="rounded-borders text-primary">
+          <q-list padding class="rounded-borders text-primary">
             <q-item
               clickable
               v-ripple
