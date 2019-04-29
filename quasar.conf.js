@@ -52,7 +52,9 @@ module.exports = function (ctx) {
         'QMarkupTable',
         'QStepper',
         'QStep',
-        'QStepperNavigation'
+        'QSpinner',
+        'QStepperNavigation',
+        'QAvatar'
       ],
 
       directives: [

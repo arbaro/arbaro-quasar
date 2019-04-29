@@ -40,7 +40,13 @@
           </thead>
           <tbody>
             <tr v-for="role in roles" :key="role.key">
-              <td class="text-left">{{ role.key }}</td>
+              <td class="text-left">
+                <q-btn
+                  @click="$router.push(`/profile/${role.key}`)"
+                  color="primary"
+                  :label="role.key"
+                />
+              </td>
               <td class="text-left">{{ role.payrate }}</td>
               <td class="text-left">{{ role.earned }}</td>
               <td class="text-left">

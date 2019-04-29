@@ -6,11 +6,22 @@
           <q-icon v-bind:name="iconName" />
         </q-btn>
 
-        <q-toolbar-title>
-          Arbaro
-        </q-toolbar-title>
+        <q-toolbar-title>Arbaro </q-toolbar-title>
 
-        <eosio-button></eosio-button>
+        <div class="row q-col-gutter-md">
+          <div
+            clickable
+            v-if="$eosio.data.authed"
+            @click="$router.push('/editprofile')"
+          >
+            <q-avatar>
+              <img :src="picUrl" />
+            </q-avatar>
+            {{ friendlyName }}
+          </div>
+
+          <eosio-button></eosio-button>
+        </div>
       </q-toolbar>
     </q-header>
 
@@ -27,11 +38,19 @@ export default {
   name: "MyLayout",
   data() {
     return {
-      leftDrawerOpen: this.$q.platform.is.desktop
+      leftDrawerOpen: this.$q.platform.is.desktop,
+      friendlyName: "Name not entered!",
+      picUrl: "https://cdn.quasar-framework.org/img/boy-avatar.png"
     };
   },
   methods: {
-    openURL
+    openURL,
+    fetchProfile: async function(accountName) {
+      const { friendly, pic } = await this.$api.getProfile(accountName);
+      if (!friendly && !pic) return;
+      this.picUrl = pic;
+      this.friendlyName = friendly;
+    }
   },
   created() {
     this.iconName =
@@ -41,6 +60,11 @@ export default {
     $route(to) {
       console.log("Setting home to", to.path === "/");
       this.iconName = to.path === "/" ? "home" : "arrow_back";
+    },
+    "$eosio.data.authed": function(authed) {
+      if (authed) {
+        this.fetchProfile(this.$eosio.data.accountName);
+      }
     }
   }
 };

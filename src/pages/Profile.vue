@@ -22,13 +22,11 @@
     </div>
 
     <div class="row flex-center q-col-gutter-xl">
-      <div class="col-xs-12 col-sm-4 flex flex-center">
+      <div class="col-xs-12 col-sm-4 flex flex-center column">
+        <div class="text-h6">{{ friendlyname }}</div>
         <q-card class="my-card">
           <q-card-section>
-            <div class="text-h6">{{ friendlyname }}</div>
-          </q-card-section>
-          <q-card-section>
-            {{ about }}
+            h
           </q-card-section>
         </q-card>
       </div>

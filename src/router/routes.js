@@ -11,6 +11,10 @@ const routes = [
       {
         path: "new",
         component: () => import("pages/New.vue")
+      },
+      {
+        path: "editprofile",
+        component: () => import("pages/EditProfile.vue")
       }
     ]
   },
