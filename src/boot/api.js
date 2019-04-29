@@ -21,6 +21,10 @@ class Api {
       .get(`/company/${companyName}/workEntries`)
       .then(res => res.data);
   }
+
+  async getProfile(worker) {
+    return this.req.get(`/profile/${worker}`).then(res => res.data);
+  }
 }
 
 export default async ({ Vue }) => {
