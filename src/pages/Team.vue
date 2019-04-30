@@ -29,7 +29,7 @@
     </q-dialog>
     <div class="row flex q-col-gutter-xl">
       <div class="col-xs-12 col-sm-9">
-        <q-markup-table wrap-cells>
+        <q-markup-table wrap-cells v-if="roles.length">
           <thead>
             <tr>
               <th class="text-left">Worker</th>
@@ -61,6 +61,12 @@
             </tr>
           </tbody>
         </q-markup-table>
+        <q-card class="my-card" v-else>
+          <q-card-section>
+            <div class="text-h6">No team members!</div>
+          </q-card-section>
+          <q-card-section>Press the plus icon to add one. </q-card-section>
+        </q-card>
       </div>
     </div>
     <q-page-sticky position="bottom-right" :offset="[18, 18]">

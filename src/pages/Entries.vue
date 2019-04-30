@@ -24,7 +24,7 @@
     </q-dialog>
     <div class="row flex-center q-col-gutter-xl">
       <div class="col-xs-12 col-sm-8">
-        <q-markup-table wrap-cells>
+        <q-markup-table wrap-cells v-if="entries.length">
           <thead>
             <tr>
               <th class="text-left">Worker</th>
@@ -46,6 +46,12 @@
             </tr>
           </tbody>
         </q-markup-table>
+        <q-card class="my-card" v-else>
+          <q-card-section>
+            <div class="text-h6">No work entries!</div>
+          </q-card-section>
+          <q-card-section>Press the plus icon to add one. </q-card-section>
+        </q-card>
       </div>
       <div class="col-xs-12 col-sm-4">
         <q-card class="my-card">

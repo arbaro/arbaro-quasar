@@ -8,10 +8,28 @@
           icon="settings"
           :done="step > 1"
         >
-          Arbaro allows team members to mint the tokens project, if you don't
-          have one create one at https://token.arbaro.work
           <q-input
-            v-model="issuerField"
+            v-model="friendlyField"
+            label="Friendly Name"
+            placeholder="Contoso Enterprises Ltd"
+          />
+          Account "{{ $eosio.data.accountName }}" should represent the
+          organisation being created. If not, please login with organisation
+          account.
+        </q-step>
+
+        <q-step
+          :name="2"
+          title="Token Minting"
+          icon="create_new_folder"
+          :done="step > 2"
+        >
+          <p>
+            What token should Arbaro mint for team members?
+          </p>
+          <q-input
+            v-model="$eosio.data.accountName"
+            :disable="true"
             :rules="[this.$eos.isName]"
             :lazy-rules="true"
             label="Issuer"
@@ -30,23 +48,13 @@
           <q-input
             v-model="tokenContractField"
             label="Token Contract"
-            hint="Contract which runs the token"
-          />
-          <q-input
-            v-model="friendlyField"
-            label="Friendly Name"
-            placeholder="Contoso Enterprises Ltd"
-          />
-          <q-btn
-            label="Create organisation"
-            color="primary"
-            @click="createOrganisation"
+            hint="Contract which hosts the token"
           />
         </q-step>
 
         <q-step
-          :name="2"
-          title="Grant Permission"
+          :name="3"
+          title="Permission"
           icon="create_new_folder"
           :done="step > 2"
         >
@@ -64,9 +72,9 @@
         <template v-slot:navigation>
           <q-stepper-navigation>
             <q-btn
-              @click="$refs.stepper.next()"
+              @click="next"
               color="primary"
-              :label="step === 4 ? 'Finish' : 'Continue'"
+              :label="step === 3 ? 'Finish' : 'Continue'"
             />
             <q-btn
               v-if="step > 1"
@@ -95,10 +103,26 @@ export default {
       issuerField: "",
       symbolField: "",
       precisionField: "",
-      friendlyField: ""
+      friendlyField: "",
+      offerPermission: false
     };
   },
+  created: function() {
+    if (this.$eosio.data.accountName) {
+      this.checkIfOrgExists();
+    }
+  },
   methods: {
+    async checkIfOrgExists() {
+      const result = await this.$eos.getTable("orgs");
+      const orgExists = result.rows.filter(
+        org => org.key === this.$eosio.data.accountName
+      )[0];
+      if (orgExists) {
+        this.step = 3;
+        this.$q.notify("Organisation already created for this account.");
+      }
+    },
     async createOrganisation() {
       await this.$eos.tx("createorg", {
         owner: this.issuerField,
@@ -107,10 +131,19 @@ export default {
         friendlyname: this.friendlyField
       });
     },
+    async next() {
+      if (this.step == 2) {
+        await this.createOrganisation();
+      }
+      this.$refs.stepper.next();
+    },
+    finish() {
+      this.$router.push(`/organisation/${this.$eosio.data.accountName}`);
+    },
     async grantPermission() {
       try {
         const tokenIssuerAccount = await this.$rpc.get_account(
-          this.issuerField
+          this.$eosio.data.accountName
         );
         const activePermissions = tokenIssuerAccount.permissions.find(
           permission => permission.perm_name === "active"
@@ -129,7 +162,7 @@ export default {
         }
 
         const data = {
-          account: this.issuerField,
+          account: this.$eosio.data.accountName,
           permission: "active",
           auth: {
             ...activePermissions,
@@ -154,7 +187,7 @@ export default {
               name: "updateauth",
               authorization: [
                 {
-                  actor: this.issuerField,
+                  actor: this.$eosio.data.accountName,
                   permission: "active"
                 }
               ],
@@ -164,7 +197,7 @@ export default {
         });
       } catch (e) {
         this.$q.notify({
-          message: `Failed to lookup account ${this.issuerField}`,
+          message: `Failed to lookup account ${this.$eosio.data.accountName}`,
           color: "negative"
         });
       }
