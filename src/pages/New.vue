@@ -135,6 +135,10 @@ export default {
       if (this.step == 2) {
         await this.createOrganisation();
       }
+      if (this.step == 3) {
+        this.$router.push("/");
+        return;
+      }
       this.$refs.stepper.next();
     },
     finish() {

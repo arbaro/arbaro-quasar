@@ -84,7 +84,7 @@ export default {
       entries: [],
       about: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Reprehenderit dicta, maiores, quod sapiente nam error accusantium id blanditiis temporibus nihil ipsam minima excepturi vitae. Officiis in id omnis necessitatibus soluta.`,
       url: "https://randomuser.me/api/portraits/women/46.jpg",
-      friendlyname: "John Williamson",
+      friendlyname: "Harry Potter",
       orgs: [],
       gitUrl: ""
     };

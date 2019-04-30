@@ -112,10 +112,6 @@ export default {
   name: "PageIndex",
   data: function() {
     return {
-      lorem: `Lorem ipsum dolor sit, amet consectetur
-          adipisicing elit. Aperiam nulla laboriosam iure nisi mollitia nesciunt
-          deserunt quaerat adipisci, optio laborum iste odit, illum dignissimos
-          blanditiis eligendi perferendis facere vitae possimus.`,
       url: "https://johnwilliamson.io/images/avatar.jpg",
       about: "Award contributors brownie points based on their minutes worked.",
       friendlyname: "John Williamson",
