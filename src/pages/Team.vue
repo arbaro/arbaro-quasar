@@ -41,11 +41,9 @@
           <tbody>
             <tr v-for="role in roles" :key="role.key">
               <td class="text-left">
-                <q-btn
-                  @click="$router.push(`/profile/${role.key}`)"
-                  color="primary"
-                  :label="role.key"
-                />
+                <q-chip clickable @click="$router.push(`/profile/${role.key}`)">
+                  {{ role.key }}
+                </q-chip>
               </td>
               <td class="text-left">{{ role.payrate }}</td>
               <td class="text-left">{{ role.earned }}</td>
@@ -103,9 +101,11 @@ export default {
   },
   methods: {
     refresh: async function(delay = 0) {
+      this.$q.loadingBar.start();
       await wait(delay);
       await this.fetchTeamMembers();
       await this.fetchOrg();
+      this.$q.loadingBar.stop();
     },
     fetchOrg: async function() {
       const result = await this.$eos.getTable("orgs");
@@ -137,10 +137,11 @@ export default {
       await this.refresh(1000);
     },
     inviteTeamMember: async function() {
-      await this.$eos.tx("createrole", {
+      await this.$eos.tx("upsertrole", {
         org: this.$route.params.account,
         worker: this.eosAccountField,
-        payrate: `${Number(this.payRateField).toFixed(4)} ${this.symbolName}`
+        payrate: `${Number(this.payRateField).toFixed(4)} ${this.symbolName}`,
+        active: false
       });
       await this.refresh(1000);
     },

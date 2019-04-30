@@ -49,6 +49,7 @@ module.exports = function (ctx) {
         'QSeparator',
         'QSpace',
         'QPageSticky',
+        'QChip',
         'QMarkupTable',
         'QStepper',
         'QStep',
@@ -63,7 +64,8 @@ module.exports = function (ctx) {
 
       // Quasar plugins
       plugins: [
-        'Notify'
+        'Notify',
+        'LoadingBar'
       ]
 
       // iconSet: 'ionicons-v4'

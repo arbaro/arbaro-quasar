@@ -97,9 +97,11 @@ export default {
       openURL(url);
     },
     async refresh() {
+      this.$q.loadingBar.start();
       await this.fetchProfile();
       await this.fetchOrgs();
       await this.fetchTokenBalances();
+      this.$q.loadingBar.stop();
     },
     async fetchProfile() {
       const result = await this.$api.getProfile(this.$route.params.account);
