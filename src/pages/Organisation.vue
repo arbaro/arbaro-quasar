@@ -79,7 +79,12 @@
             <div class="text-h6">Arbaro Token Enabled</div>
           </q-card-section>
           <q-card-section>
-            <q-btn label="Donate" @click="donateTrigger" color="primary" />
+            <q-btn
+              label="Donate"
+              @click="donateTrigger"
+              color="primary"
+              :disable="!$eosio.data.authed"
+            />
           </q-card-section>
         </q-card>
       </div>
@@ -147,8 +152,7 @@ export default {
       this.precision = precision;
       this.symbolName = symbolName;
       this.tokenContract = tokencon;
-      this.arbaroTokenEnabled =
-        tokencon == "arbtoken" || tokencon == "arbarotokenn";
+      this.arbaroTokenEnabled = tokencon == process.env.ARBARO_TOKEN_CONTRACT;
     }
   }
 };
