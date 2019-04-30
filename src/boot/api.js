@@ -34,5 +34,5 @@ class Api {
 }
 
 export default async ({ Vue }) => {
-  Vue.prototype.$api = new Api("http://localhost:3001");
+  Vue.prototype.$api = new Api(process.env.API_URL);
 };

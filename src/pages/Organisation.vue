@@ -1,5 +1,32 @@
 <template>
   <q-page padding>
+    <q-dialog v-model="donationPrompt" persistent>
+      <q-card style="min-width: 400px">
+        <q-card-section>
+          <div class="text-h6">
+            Make a donation to {{ $route.params.account }}
+          </div>
+          <div class="text">
+            Your donation will be sent directly to contributors of the
+            {{ $route.params.account }}
+            project based on their time spent in developing the project!
+          </div>
+        </q-card-section>
+        <q-card-section>
+          <q-input
+            v-model="donationAmount"
+            :lazy-rules="true"
+            type="number"
+            suffix="EOS"
+            label="Donation Amount"
+          />
+        </q-card-section>
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="Cancel" v-close-popup />
+          <q-btn flat label="Donate" @click="donate" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
     <div class="row flex-center q-col-gutter-xl">
       <div class="col-xs-12 col-sm-4 flex flex-center">
         <q-img
@@ -47,19 +74,14 @@
       </div>
 
       <div class="col-xs-12 col-sm-6">
-        <!-- <q-card v-if="arbaroTokenEnabled">
+        <q-card v-if="arbaroTokenEnabled">
           <q-card-section>
             <div class="text-h6">Arbaro Token Enabled</div>
           </q-card-section>
           <q-card-section>
             <q-btn label="Donate" @click="donateTrigger" color="primary" />
           </q-card-section>
-          <q-card-section>
-            <q-list>
-              <q-item>Hello</q-item>
-            </q-list>
-          </q-card-section>
-        </q-card> -->
+        </q-card>
       </div>
     </div>
   </q-page>
@@ -72,10 +94,6 @@ export default {
   name: "PageIndex",
   data: function() {
     return {
-      lorem: `Lorem ipsum dolor sit, amet consectetur
-          adipisicing elit. Aperiam nulla laboriosam iure nisi mollitia nesciunt
-          deserunt quaerat adipisci, optio laborum iste odit, illum dignissimos
-          blanditiis eligendi perferendis facere vitae possimus.`,
       url: "http://s3.amazonaws.com/37assets/svn/765-default-avatar.png",
       friendlyname: "",
       tokenContract: "",
@@ -83,7 +101,8 @@ export default {
       gitUrl: "",
       about: "",
       precision: null,
-      link: "inbox",
+      donationPrompt: false,
+      donationAmount: "",
       arbaroTokenEnabled: false
     };
   },
@@ -95,13 +114,21 @@ export default {
     open(url) {
       openURL(url);
     },
+    async donateTrigger() {
+      this.donationPrompt = true;
+    },
+    async donate() {
+      this.$eos.transfer(
+        process.env.ARBARO_TOKEN_CONTRACT,
+        `${Number(this.donationAmount).toFixed(4)} EOS`,
+        `${this.symbolName}:${this.precision}`
+      );
+    },
     async refresh() {
       this.fetchOrganisation(this.$route.params.account);
       this.fetchProfile(this.$route.params.account);
     },
-    async donateTrigger() {
-      console.log("f");
-    },
+
     async fetchProfile(profileName) {
       const { git, pic, about, friendly } = await this.$api.getProfile(
         profileName

@@ -99,7 +99,7 @@ export default {
   data: function() {
     return {
       step: 1,
-      tokenContractField: "arbarotokenn",
+      tokenContractField: process.env.ARBARO_TOKEN_CONTRACT,
       issuerField: "",
       symbolField: "",
       precisionField: "",
