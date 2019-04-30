@@ -33,7 +33,7 @@
           <thead>
             <tr>
               <th class="text-left">Worker</th>
-              <th class="text-left">Pay Rate</th>
+              <th class="text-left">Pay Rate Per Minute</th>
               <th class="text-left">Shares Earned</th>
               <th class="text-left">Role Accepted</th>
             </tr>

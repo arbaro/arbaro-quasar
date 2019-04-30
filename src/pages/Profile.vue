@@ -15,20 +15,30 @@
             <div class="text-h6">About</div>
           </q-card-section>
           <q-card-section>
-            {{ about }}
+            {{ about || "User has not entered profile information yet!" }}
           </q-card-section>
         </q-card>
       </div>
     </div>
 
     <div class="row flex-center q-col-gutter-xl">
-      <div class="col-xs-12 col-sm-4 flex flex-center column">
-        <div class="text-h6">{{ friendlyname }}</div>
-        <q-card class="my-card">
-          <q-card-section>
-            h
-          </q-card-section>
-        </q-card>
+      <div class="col-xs-12 col-sm-4  column">
+        <div class="text-h6 flex flex-center">
+          {{ friendlyname || "A profile has no name." }}
+        </div>
+        <q-list bordered separator>
+          <q-item-label header>Organisations Joined</q-item-label>
+
+          <q-item v-for="org in orgs" :key="org.key">
+            <q-item-section>
+              <q-item-label>{{ org.key }}</q-item-label>
+              <q-item-label caption
+                >Balance {{ org.balance }}
+                {{ org.symbol.split(",")[1] }}</q-item-label
+              >
+            </q-item-section>
+          </q-item>
+        </q-list>
       </div>
 
       <div class="col-xs-12 col-sm-4 ">
@@ -62,8 +72,9 @@ export default {
     return {
       entries: [],
       about: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Reprehenderit dicta, maiores, quod sapiente nam error accusantium id blanditiis temporibus nihil ipsam minima excepturi vitae. Officiis in id omnis necessitatibus soluta.`,
-      url: "https://johnwilliamson.io/images/avatar.jpg",
-      friendlyname: "John Williamson"
+      url: "https://randomuser.me/api/portraits/women/46.jpg",
+      friendlyname: "John Williamson",
+      orgs: []
     };
   },
   created: function() {
@@ -72,12 +83,15 @@ export default {
   methods: {
     async refresh() {
       await this.fetchProfile();
+      await this.fetchOrgs();
+      await this.fetchTokenBalances();
     },
     async fetchProfile() {
       const result = await this.$api.getProfile(this.$route.params.account);
       this.friendlyname = result.friendly;
       this.url = result.pic;
       this.about = result.about;
+      this.teams = result.orgs;
 
       this.entries = result.entries.map(entry => ({
         ...entry,
@@ -87,6 +101,29 @@ export default {
           .fromNow(),
         timeSpent: moment.duration(entry.minutes, "minutes").humanize()
       }));
+    },
+    async fetchOrgs() {
+      if (this.teams.length < 1) return;
+      const teams = this.teams;
+      const tableResult = await this.$eos.getTable("orgs");
+      const orgs = tableResult.rows.filter(
+        org => teams.filter(team => team == org.key)[0]
+      );
+      this.orgs = orgs;
+    },
+    async fetchTokenBalances() {
+      if (this.orgs.length < 1) return;
+      const orgs = this.orgs;
+
+      for (var i = 0; i < orgs.length; i++) {
+        const balance = await this.$eos.getBalance(
+          this.$route.params.account,
+          orgs[i].symbol.split(",")[1],
+          orgs[i].tokencon
+        );
+        console.log(balance);
+        this.orgs = this.orgs.map(org => ({ ...org, balance }));
+      }
     }
   }
 };

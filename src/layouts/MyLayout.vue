@@ -6,7 +6,7 @@
           <q-icon v-bind:name="iconName" />
         </q-btn>
 
-        <q-toolbar-title>Arbaro </q-toolbar-title>
+        <q-toolbar-title>Arbaro</q-toolbar-title>
 
         <div class="row q-col-gutter-md">
           <div
@@ -55,6 +55,9 @@ export default {
   created() {
     this.iconName =
       this.$router.app._route.fullPath === "/" ? "home" : "arrow_back";
+    if (this.$eosio.data.authed) {
+      this.fetchProfile(this.$eosio.data.accountName);
+    }
   },
   watch: {
     $route(to) {
