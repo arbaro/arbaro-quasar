@@ -4,6 +4,10 @@
       <q-card style="min-width: 400px">
         <q-card-section>
           <div class="text-h6">Make a donation</div>
+          <div class="text">
+            Your donation will be sent directly to contributors of the Arbaro
+            project based on their time spent in developing the project!
+          </div>
         </q-card-section>
         <q-card-section>
           <q-input
@@ -17,6 +21,26 @@
         <q-card-actions align="right" class="text-primary">
           <q-btn flat label="Cancel" v-close-popup />
           <q-btn flat label="Donate" @click="donateTrigger" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+    <q-dialog v-model="aboutPrompt" persistent>
+      <q-card style="min-width: 400px">
+        <q-card-section>
+          <div class="text-h6">About</div>
+        </q-card-section>
+        <q-card-section>
+          <div class="text">
+            Arbaro is a platform which allows small Open Source projects to
+            award contributors Brownie Points issuing whatever token specified.
+          </div>
+          <div class="text">
+            Combined with the Arbaro Token contract in particular, contributors
+            can automatically receive dividends from donations.
+          </div>
+        </q-card-section>
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="Close" v-close-popup />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -93,11 +117,12 @@ export default {
           deserunt quaerat adipisci, optio laborum iste odit, illum dignissimos
           blanditiis eligendi perferendis facere vitae possimus.`,
       url: "https://johnwilliamson.io/images/avatar.jpg",
-      about: "Create your own decentralised project/organisation.",
+      about: "Award contributors brownie points based on their minutes worked.",
       friendlyname: "John Williamson",
       donationPrompt: false,
       donationAmount: "",
-      orgs: []
+      orgs: [],
+      aboutPrompt: false
     };
   },
   created: async function() {
