@@ -35,7 +35,17 @@
           </thead>
           <tbody>
             <tr v-for="entrie in entries" :key="entrie.transactionId">
-              <td class="text-left">{{ entrie.worker }}</td>
+              <td class="text-left">
+                <q-chip
+                  clickable
+                  @click="$router.push(`/profile/${entrie.worker}`)"
+                >
+                  <q-avatar v-if="entrie.pic">
+                    <img :src="entrie.pic" />
+                  </q-avatar>
+                  {{ entrie.friendly || entrie.worker }}
+                </q-chip>
+              </td>
               <td class="text-left">{{ entrie.time }}</td>
               <td class="text-left">
                 {{ Number(entrie.reward.amount) }} {{ entrie.reward.symbol }}

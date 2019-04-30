@@ -10,6 +10,7 @@
         <q-input v-model="friendlyName" label="Name" />
         <q-input v-model="about" label="About" />
         <q-input v-model="picUrl" label="Picture URL" />
+        <q-input v-model="gitUrl" label="GitHub URL" />
         <q-btn @click="saveProfile" color="primary" label="Save" />
       </div>
     </div>
@@ -28,6 +29,7 @@ export default {
       friendlyName: "",
       about: "",
       picUrl: "",
+      gitUrl: "",
       loading: true
     };
   },
@@ -40,10 +42,11 @@ export default {
     async fetchProfile(accountName) {
       try {
         const profile = await this.$api.getProfile(accountName);
-        const { about, friendly, pic } = profile;
+        const { about, friendly, pic, git } = profile;
         this.friendlyName = friendly;
         this.about = about;
         this.picUrl = pic;
+        this.gitUrl = git;
       } catch (e) {
         this.$q.notify(`Error fetching profile ${e.message}`);
       }
@@ -55,7 +58,8 @@ export default {
           prof: this.$eosio.data.accountName,
           friendly: this.friendlyName,
           about: this.about,
-          pic: this.picUrl
+          pic: this.picUrl,
+          git: this.gitUrl
         });
         this.$router.push("/");
         this.$q.notify(

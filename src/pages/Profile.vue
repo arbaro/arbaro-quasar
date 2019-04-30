@@ -26,6 +26,16 @@
         <div class="text-h6 flex flex-center">
           {{ friendlyname || "A profile has no name." }}
         </div>
+        <q-card class="my-card flex flex-center" flat>
+          <q-card-section>
+            <q-icon
+              @click="open(gitUrl)"
+              v-if="gitUrl"
+              name="ion-logo-github"
+              style="font-size: 2rem;"
+            />
+          </q-card-section>
+        </q-card>
         <q-list bordered separator>
           <q-item-label header>Organisations Joined</q-item-label>
 
@@ -65,6 +75,7 @@
 
 <script>
 import moment from "moment";
+import { openURL } from "quasar";
 
 export default {
   name: "PageIndex",
@@ -74,13 +85,17 @@ export default {
       about: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Reprehenderit dicta, maiores, quod sapiente nam error accusantium id blanditiis temporibus nihil ipsam minima excepturi vitae. Officiis in id omnis necessitatibus soluta.`,
       url: "https://randomuser.me/api/portraits/women/46.jpg",
       friendlyname: "John Williamson",
-      orgs: []
+      orgs: [],
+      gitUrl: ""
     };
   },
   created: function() {
     this.refresh();
   },
   methods: {
+    open(url) {
+      openURL(url);
+    },
     async refresh() {
       await this.fetchProfile();
       await this.fetchOrgs();
@@ -92,6 +107,7 @@ export default {
       this.url = result.pic;
       this.about = result.about;
       this.teams = result.orgs;
+      this.gitUrl = result.git;
 
       this.entries = result.entries.map(entry => ({
         ...entry,
@@ -121,7 +137,6 @@ export default {
           orgs[i].symbol.split(",")[1],
           orgs[i].tokencon
         );
-        console.log(balance);
         this.orgs = this.orgs.map(org => ({ ...org, balance }));
       }
     }
