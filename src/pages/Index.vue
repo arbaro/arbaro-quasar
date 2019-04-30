@@ -38,6 +38,18 @@
             Combined with the Arbaro Token contract in particular, contributors
             can automatically receive dividends from donations.
           </div>
+          <div class="text flex justify-around">
+            <q-icon
+              @click="open('https://github.com/arbaro')"
+              name="fab fa-github"
+              style="font-size: 2rem;"
+            />
+            <q-icon
+              @click="open('https://t.me/arbarowork')"
+              name="fab fa-telegram"
+              style="font-size: 2rem;"
+            />
+          </div>
         </q-card-section>
         <q-card-actions align="right" class="text-primary">
           <q-btn flat label="Close" v-close-popup />
@@ -108,6 +120,7 @@
 <style></style>
 
 <script>
+import { openURL } from "quasar";
 export default {
   name: "PageIndex",
   data: function() {
@@ -125,6 +138,9 @@ export default {
     this.refresh();
   },
   methods: {
+    open(url) {
+      openURL(url);
+    },
     async donateTrigger() {
       await this.$eos.transfer(
         "johnn.y",

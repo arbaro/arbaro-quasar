@@ -52,7 +52,7 @@
       <div class="col-xs-12 col-sm-4 ">
         <q-card class="my-card flex column" flat>
           <q-card-section>
-            <div class="text-h5">
+            <div class="text-h5 flex flex-center">
               {{ friendlyname || $route.params.account }}
             </div>
           </q-card-section>
@@ -60,7 +60,7 @@
             <q-icon
               @click="open(gitUrl)"
               v-if="gitUrl"
-              name="ion-logo-github"
+              name="fab fa-github"
               style="font-size: 2rem;"
             />
             <q-btn
