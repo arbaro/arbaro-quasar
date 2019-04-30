@@ -25,6 +25,12 @@ class Api {
   async getProfile(worker) {
     return this.req.get(`/profile/${worker}`).then(res => res.data);
   }
+
+  async getProfiles(workers) {
+    return this.req
+      .post(`/profiles`, { accounts: workers })
+      .then(res => res.data);
+  }
 }
 
 export default async ({ Vue }) => {
