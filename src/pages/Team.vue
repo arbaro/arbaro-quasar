@@ -35,7 +35,7 @@
               <th class="text-left">Worker</th>
               <th class="text-left">Pay Rate Per Minute</th>
               <th class="text-left">Shares Earned</th>
-              <th class="text-left">Role Accepted</th>
+              <th class="text-left">Active</th>
             </tr>
           </thead>
           <tbody>
@@ -52,9 +52,9 @@
               <td class="text-left">
                 <q-btn
                   color="primary"
-                  label="Accept"
-                  v-if="!role.roleaccepted"
-                  @click="acceptRole(role.key)"
+                  v-if="$eosio.data.accountName == role.key"
+                  :label="role.active ? 'Resign' : 'Accept'"
+                  @click="toggleRole(role.key)"
                 />
                 <q-icon name="done" v-else />
               </td>
@@ -126,10 +126,13 @@ export default {
         return true;
       }
     },
-    acceptRole: async function(worker) {
-      await this.$eos.tx("acceptrole", {
+    toggleRole: async function(worker) {
+      const role = this.roles.filter(role => role.key === worker)[0];
+      await this.$eos.tx("upsertrole", {
         org: this.$route.params.account,
-        worker
+        worker,
+        payrate: role.payrate,
+        active: !role.active
       });
       await this.refresh(1000);
     },
