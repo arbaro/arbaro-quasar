@@ -82,7 +82,7 @@
         </q-card>
       </div>
 
-      <div class="col-xs-12 col-sm-4">
+      <div class="col-xs-12 col-sm-4 m q-gutter-lg">
         <q-list bordered separator>
           <q-item-label header>Organisations</q-item-label>
           <q-item
@@ -94,6 +94,31 @@
           >
             <q-item-section>
               <q-item-label>{{ org.key }}</q-item-label>
+              <!-- <q-item-label caption>{{ lorem }}</q-item-label> -->
+            </q-item-section>
+            <!-- <q-item-section side top> -->
+            <!-- 1 min ago -->
+            <!-- <q-badge color="teal" label="10k" /> -->
+            <!-- </q-item-section> -->
+          </q-item>
+        </q-list>
+        <q-list bordered separator>
+          <q-item-label header>Profiles</q-item-label>
+          <q-item
+            v-for="profile in profiles"
+            :key="profile.prof"
+            clickable
+            @click="$router.push(`profile/${profile.prof}`)"
+            v-ripple
+          >
+            <q-item-section>
+              <q-chip color="white">
+                <q-avatar v-if="profile.pic">
+                  <img :src="profile.pic" />
+                </q-avatar>
+                {{ profile.friendly || profile.prof }}
+              </q-chip>
+
               <!-- <q-item-label caption>{{ lorem }}</q-item-label> -->
             </q-item-section>
             <!-- <q-item-section side top> -->
@@ -131,7 +156,8 @@ export default {
       donationPrompt: false,
       donationAmount: "",
       orgs: [],
-      aboutPrompt: false
+      aboutPrompt: false,
+      profiles: []
     };
   },
   created: async function() {
@@ -150,10 +176,16 @@ export default {
     },
     async refresh() {
       await this.fetchOrgs();
+      await this.fetchProfiles();
     },
     async fetchOrgs() {
       const result = await this.$eos.getTable("orgs");
       this.orgs = result.rows;
+    },
+    async fetchProfiles() {
+      const result = await this.$api.getProfiles();
+      this.profiles = result;
+      // this.orgs = result.rows;
     }
   }
 };

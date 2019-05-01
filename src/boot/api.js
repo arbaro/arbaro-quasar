@@ -27,9 +27,13 @@ class Api {
   }
 
   async getProfiles(workers) {
-    return this.req
-      .post(`/profiles`, { accounts: workers })
-      .then(res => res.data);
+    if (workers) {
+      return this.req
+        .post(`/profiles`, { accounts: workers })
+        .then(res => res.data);
+    } else {
+      return this.req.get("/profiles").then(res => res.data);
+    }
   }
 }
 

@@ -124,8 +124,8 @@ export default {
       }
     },
     async createOrganisation() {
-      await this.$eos.tx("createorg", {
-        owner: this.issuerField,
+      await this.$eos.tx("upsertorg", {
+        owner: this.$eosio.data.accountName,
         tokensym: `${this.precisionField},${this.symbolField}`,
         tokencon: this.tokenContractField,
         friendlyname: this.friendlyField
