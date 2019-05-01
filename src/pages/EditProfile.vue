@@ -63,7 +63,7 @@ export default {
         });
         this.$router.push("/");
         this.$q.notify(
-          "Profiled successfully updated, refresh page to reflect changes."
+          "Profiled successfully updated, refresh page to reflect changes"
         );
       } catch (e) {
         console.log("error", e);
