@@ -27,6 +27,29 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+    <q-dialog v-model="editOrgPrompt" persistent>
+      <q-card style="min-width: 400px">
+        <q-card-section>
+          <div class="text-h6">
+            Edit Organisation {{ $route.params.account }}
+          </div>
+        </q-card-section>
+        <q-card-section>
+          <q-input v-model="tokensym" :lazy-rules="true" label="Symbol" />
+          <q-input
+            v-model="precisionField"
+            :lazy-rules="true"
+            label="Precision"
+          />
+          <q-input v-model="tokenContractField" label="Token Contract" />
+          <q-input v-model="friendlyField" label="Friendly name" />
+        </q-card-section>
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="Cancel" v-close-popup />
+          <q-btn flat label="Save" @click="upsertOrg" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
     <div class="row flex-center q-col-gutter-xl">
       <div class="col-xs-12 col-sm-4 flex flex-center">
         <q-img
@@ -75,6 +98,13 @@
               color="primary"
               @click="$router.push(`/editprofile`)"
             />
+            <q-space />
+            <q-btn
+              v-if="$eosio.data.accountName == $route.params.account"
+              label="Edit Organisation"
+              color="primary"
+              @click="editOrg"
+            />
           </q-card-section>
         </q-card>
       </div>
@@ -113,7 +143,12 @@ export default {
       about: "",
       precision: null,
       donationPrompt: false,
+      editOrgPrompt: false,
       donationAmount: "",
+      tokensym: "",
+      precisionField: "",
+      tokenContractField: "",
+      friendlyField: "",
       arbaroTokenEnabled: false
     };
   },
@@ -127,6 +162,32 @@ export default {
     },
     async donateTrigger() {
       this.donationPrompt = true;
+    },
+    async editOrg() {
+      this.editOrgPrompt = true;
+    },
+    async upsertOrg() {
+      await this.$eos.tx("upsertorg", {
+        owner: this.$eosio.data.accountName,
+        tokensym: `${this.precisionField},${this.tokensym}`,
+        tokencon: this.tokenContractField,
+        friendlyname: this.friendlyField
+      });
+      const tableResult = await this.$eos.getTable(
+        "roles",
+        this.$route.params.account
+      );
+
+      for (var i = 0; i < tableResult.rows.length; i++) {
+        await this.$eos.tx("upsertrole", {
+          org: this.$route.params.account,
+          worker: tableResult.rows[i].key,
+          payrate: `${tableResult.rows[i].payrate.split(" ")[0]} ${
+            this.tokensym
+          }`,
+          active: Boolean(tableResult.rows[i].active)
+        });
+      }
     },
     async donate() {
       this.$eos.transfer(

@@ -2,8 +2,7 @@ import { openURL, Notify } from "quasar";
 import { JsonRpc } from "eosjs";
 
 import { Scatter } from "ual-scatter";
-import { Lynx } from 'ual-lynx'
-
+import { Lynx } from "ual-lynx";
 
 import Eos from "ual-quasar-renderer";
 
@@ -23,8 +22,7 @@ const myChain = {
 const appName = "Arbaro";
 const rpc = new JsonRpc(`${PROTOCOL}://${HOST}:${PORT}`);
 const scatter = new Scatter([myChain], { appName });
-const lynx = new Lynx([myChain])
-
+const lynx = new Lynx([myChain]);
 
 export default ({ Vue }) => {
   Vue.use(Eos, {
