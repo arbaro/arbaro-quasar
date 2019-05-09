@@ -24,7 +24,12 @@
     </q-dialog>
     <div class="row flex-center q-col-gutter-xl">
       <div class="col-xs-12 col-sm-8">
-        <q-markup-table wrap-cells v-if="entries.length">
+        <q-card class="my-card" v-if="loading">
+          <q-card-section>
+            <div class="text-h6">Loading!</div>
+          </q-card-section>
+        </q-card>
+        <q-markup-table wrap-cells v-else-if="entries.length">
           <thead>
             <tr>
               <th class="text-left">Worker</th>
@@ -94,6 +99,7 @@ export default {
   name: "PageIndex",
   data: function() {
     return {
+      loading: true,
       timePrompt: false,
       notes: "",
       minutes: "",
@@ -107,7 +113,9 @@ export default {
   methods: {
     refresh: async function(delay) {
       if (delay) await wait(delay);
+      this.loading = true;
       await this.fetchWorkEntries();
+      this.loading = false;
     },
     fetchWorkEntries: async function() {
       const entries = await this.$api.getWorkEntries(

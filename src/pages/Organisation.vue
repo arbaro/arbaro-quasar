@@ -63,6 +63,12 @@
               name="fab fa-github"
               style="font-size: 2rem;"
             />
+            <q-icon
+              @click="open(`https://eosq.app/account/${$route.params.account}`)"
+              v-if="gitUrl"
+              name="account_balance_wallet"
+              style="font-size: 2rem;"
+            />
             <q-btn
               v-if="$eosio.data.accountName == $route.params.account"
               label="Edit Profile"

@@ -3,7 +3,10 @@
     <div class="row flex-center q-col-gutter-xl">
       <div class="col-xs-12 col-sm-4 flex flex-center">
         <q-img
-          :src="url"
+          :src="
+            url ||
+              `https://clinicforspecialchildren.org/wp-content/uploads/2016/08/avatar-placeholder-480x480.gif`
+          "
           spinner-color="white"
           style="height: 140px; max-width: 150px"
         />
@@ -82,9 +85,9 @@ export default {
   data: function() {
     return {
       entries: [],
-      about: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Reprehenderit dicta, maiores, quod sapiente nam error accusantium id blanditiis temporibus nihil ipsam minima excepturi vitae. Officiis in id omnis necessitatibus soluta.`,
-      url: "https://randomuser.me/api/portraits/women/46.jpg",
-      friendlyname: "Harry Potter",
+      about: ``,
+      url: "",
+      friendlyname: "",
       orgs: [],
       gitUrl: ""
     };
@@ -99,7 +102,6 @@ export default {
     async refresh() {
       this.$q.loadingBar.start();
       await this.fetchProfile();
-      await this.fetchOrgs();
       await this.fetchTokenBalances();
       this.$q.loadingBar.stop();
     },

@@ -63,9 +63,7 @@
             <div class="text-h6">Arbaro</div>
             <div class="text-subtitle2">by John Williamson</div>
           </q-card-section>
-          <q-card-section>
-            {{ about }}
-          </q-card-section>
+          <q-card-section>{{ about }}</q-card-section>
 
           <q-separator dark />
 
@@ -99,14 +97,7 @@
                 </q-avatar>
                 {{ org.friendly || org.key }}
               </q-chip>
-
-              <!-- <q-item-label>{{ org.key }}</q-item-label> -->
-              <!-- <q-item-label caption>{{ lorem }}</q-item-label> -->
             </q-item-section>
-            <!-- <q-item-section side top> -->
-            <!-- 1 min ago -->
-            <!-- <q-badge color="teal" label="10k" /> -->
-            <!-- </q-item-section> -->
           </q-item>
         </q-list>
         <q-list bordered separator>
@@ -125,13 +116,7 @@
                 </q-avatar>
                 {{ profile.friendly || profile.prof }}
               </q-chip>
-
-              <!-- <q-item-label caption>{{ lorem }}</q-item-label> -->
             </q-item-section>
-            <!-- <q-item-section side top> -->
-            <!-- 1 min ago -->
-            <!-- <q-badge color="teal" label="10k" /> -->
-            <!-- </q-item-section> -->
           </q-item>
         </q-list>
       </div>

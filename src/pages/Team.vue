@@ -54,7 +54,8 @@
                   :label="role.active ? 'Resign' : 'Accept'"
                   @click="toggleRole(role.key)"
                 />
-                <q-icon name="done" v-else />
+                <q-icon name="done" v-else-if="role.active" />
+                <q-icon name="clear" v-else />
               </td>
             </tr>
           </tbody>

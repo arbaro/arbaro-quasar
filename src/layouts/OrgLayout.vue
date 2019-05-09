@@ -40,7 +40,7 @@
               active-class="my-menu-link"
             >
               <q-item-section avatar>
-                <q-icon name="send" />
+                <q-icon name="accessibility_new" />
               </q-item-section>
 
               <q-item-section>Team</q-item-section>
@@ -54,7 +54,7 @@
               active-class="my-menu-link"
             >
               <q-item-section avatar>
-                <q-icon name="delete" />
+                <q-icon name="alarm" />
               </q-item-section>
 
               <q-item-section>Work Entries</q-item-section>
