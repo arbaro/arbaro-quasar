@@ -54,6 +54,12 @@
                   :label="role.active ? 'Resign' : 'Accept'"
                   @click="toggleRole(role.key)"
                 />
+                <q-btn
+                  color="primary"
+                  v-else-if="$eosio.data.accountName == $route.params.account"
+                  label="Fire"
+                  @click="toggleFire(role.key)"
+                />
                 <q-icon name="done" v-else-if="role.active" />
                 <q-icon name="clear" v-else />
               </td>
@@ -134,6 +140,22 @@ export default {
         worker,
         payrate: role.payrate,
         active: !role.active
+      });
+      await this.refresh(1000);
+    },
+    toggleFire: async function(worker) {
+      const role = this.roles.filter(role => role.key === worker)[0];
+      if (role.active) {
+        await this.$eos.tx("upsertrole", {
+          org: this.$route.params.account,
+          worker,
+          payrate: role.payrate,
+          active: false
+        });
+      }
+      await this.$eos.tx("remover", {
+        org: this.$route.params.account,
+        worker
       });
       await this.refresh(1000);
     },
