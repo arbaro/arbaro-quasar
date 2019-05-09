@@ -1,7 +1,7 @@
 {
   "name": "arbaro-quasar",
   "version": "0.0.1",
-  "description": "A Quasar Framework app",
+  "description": "Decentralised Organisations on EOS",
   "productName": "Arbaro",
   "cordovaId": "org.cordova.quasar.app",
   "author": "John Williamson <johnjwilliamson@live.com>",
