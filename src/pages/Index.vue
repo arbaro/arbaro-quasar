@@ -179,24 +179,27 @@ export default {
       this.profiles = result.filter(profile => !profile.isOrg);
       const profileOrgs = result.filter(profile => profile.isOrg);
       const originalOrgs = this.orgs;
-      const blank = [];
-      for (var i = 0; i < profileOrgs.length; i++) {
-        for (var y = 0; y < originalOrgs.length; y++) {
-          if (originalOrgs[y].key == profileOrgs[i].prof) {
-            blank.push(profileOrgs[i]);
-          } else {
-            blank.push(originalOrgs[y]);
+      console.log({ profileOrgs, originalOrgs });
+      if (profileOrgs.length > 0) {
+        const blank = [];
+        for (var i = 0; i < profileOrgs.length; i++) {
+          for (var y = 0; y < originalOrgs.length; y++) {
+            if (originalOrgs[y].key == profileOrgs[i].prof) {
+              blank.push(profileOrgs[i]);
+            } else {
+              blank.push(originalOrgs[y]);
+            }
           }
         }
+        this.orgs = blank.map(org => {
+          if (org.key) {
+            return org;
+          } else {
+            return { ...org, key: org.prof };
+          }
+        });
+        console.log(this.orgs, "is the new orgs");
       }
-      this.orgs = blank.map(org => {
-        if (org.key) {
-          return org;
-        } else {
-          return { ...org, key: org.prof };
-        }
-      });
-      console.log(this.orgs, "is the new orgs");
     }
   }
 };
