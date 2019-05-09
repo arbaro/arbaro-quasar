@@ -40,10 +40,10 @@
                   clickable
                   @click="$router.push(`/profile/${entrie.worker}`)"
                 >
-                  <q-avatar v-if="entrie.pic">
-                    <img :src="entrie.pic" />
+                  <q-avatar v-if="entrie.prof.pic">
+                    <img :src="entrie.prof.pic" />
                   </q-avatar>
-                  {{ entrie.friendly || entrie.worker }}
+                  {{ entrie.prof.friendly || entrie.prof.prof }}
                 </q-chip>
               </td>
               <td class="text-left">{{ entrie.time }}</td>

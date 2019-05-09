@@ -93,7 +93,14 @@
             v-ripple
           >
             <q-item-section>
-              <q-item-label>{{ org.key }}</q-item-label>
+              <q-chip color="white">
+                <q-avatar v-if="org.pic">
+                  <img :src="org.pic" />
+                </q-avatar>
+                {{ org.friendly || org.key }}
+              </q-chip>
+
+              <!-- <q-item-label>{{ org.key }}</q-item-label> -->
               <!-- <q-item-label caption>{{ lorem }}</q-item-label> -->
             </q-item-section>
             <!-- <q-item-section side top> -->
@@ -184,8 +191,27 @@ export default {
     },
     async fetchProfiles() {
       const result = await this.$api.getProfiles();
-      this.profiles = result;
-      // this.orgs = result.rows;
+      this.profiles = result.filter(profile => !profile.isOrg);
+      const profileOrgs = result.filter(profile => profile.isOrg);
+      const originalOrgs = this.orgs;
+      const blank = [];
+      for (var i = 0; i < profileOrgs.length; i++) {
+        for (var y = 0; y < originalOrgs.length; y++) {
+          if (originalOrgs[y].key == profileOrgs[i].prof) {
+            blank.push(profileOrgs[i]);
+          } else {
+            blank.push(originalOrgs[y]);
+          }
+        }
+      }
+      this.orgs = blank.map(org => {
+        if (org.key) {
+          return org;
+        } else {
+          return { ...org, key: org.prof };
+        }
+      });
+      console.log(this.orgs, "is the new orgs");
     }
   }
 };

@@ -39,12 +39,12 @@
         <q-list bordered separator>
           <q-item-label header>Organisations Joined</q-item-label>
 
-          <q-item v-for="org in orgs" :key="org.key">
+          <q-item v-for="org in orgs" :key="org._id">
             <q-item-section>
-              <q-item-label>{{ org.key }}</q-item-label>
+              <q-item-label>{{ org.friendlyname || org.owner }}</q-item-label>
               <q-item-label caption
                 >Balance {{ org.balance }}
-                {{ org.symbol.split(",")[1] }}</q-item-label
+                {{ org.tokensym.split(",")[1] }}</q-item-label
               >
             </q-item-section>
           </q-item>
@@ -57,7 +57,7 @@
 
           <q-item v-for="entrie in entries" :key="entrie.transactionId">
             <q-item-section>
-              <q-item-label>{{ entrie.orgFriendly }}</q-item-label>
+              <q-item-label>{{ entrie.org.friendlyname }}</q-item-label>
               <q-item-label caption> {{ entrie.notes }}</q-item-label>
             </q-item-section>
             <q-item-section side top>
@@ -110,7 +110,8 @@ export default {
       this.about = result.about;
       this.teams = result.orgs;
       this.gitUrl = result.git;
-
+      this.orgs = result.orgs;
+      console.log(this.orgs);
       this.entries = result.entries.map(entry => ({
         ...entry,
         when: moment
@@ -120,23 +121,16 @@ export default {
         timeSpent: moment.duration(entry.minutes, "minutes").humanize()
       }));
     },
-    async fetchOrgs() {
-      if (this.teams.length < 1) return;
-      const teams = this.teams;
-      const tableResult = await this.$eos.getTable("orgs");
-      const orgs = tableResult.rows.filter(
-        org => teams.filter(team => team == org.key)[0]
-      );
-      this.orgs = orgs;
-    },
+
     async fetchTokenBalances() {
       if (this.orgs.length < 1) return;
       const orgs = this.orgs;
 
       for (var i = 0; i < orgs.length; i++) {
+        console.log(orgs[i], orgs[i].tokensym, orgs[i].tokencon);
         const balance = await this.$eos.getBalance(
           this.$route.params.account,
-          orgs[i].symbol.split(",")[1],
+          orgs[i].tokensym.split(",")[1],
           orgs[i].tokencon
         );
         this.orgs = this.orgs.map(org => ({ ...org, balance }));

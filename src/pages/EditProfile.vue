@@ -48,7 +48,9 @@ export default {
         this.picUrl = pic;
         this.gitUrl = git;
       } catch (e) {
-        this.$q.notify(`Error fetching profile ${e.message}`);
+        if (!e.message.includes("404")) {
+          this.$q.notify(`Error fetching profile ${e.message}`);
+        }
       }
       this.loading = false;
     },
