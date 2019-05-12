@@ -43,7 +43,7 @@
               <td class="text-left">
                 <q-chip
                   clickable
-                  @click="$router.push(`/profile/${entrie.worker}`)"
+                  @click="$router.push(`/profile/${entrie.prof.prof}`)"
                 >
                   <q-avatar v-if="entrie.prof.pic">
                     <img :src="entrie.prof.pic" />
