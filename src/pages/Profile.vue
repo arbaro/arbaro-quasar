@@ -58,7 +58,12 @@
         <q-list bordered separator>
           <q-item-label header>Recent Activity</q-item-label>
 
-          <q-item v-for="entrie in entries" :key="entrie.transactionId">
+          <q-item
+            v-for="entrie in entries"
+            :key="entrie.transactionId"
+            clickable
+            @click="$router.push(`/profile/${entrie.org.owner}`)"
+          >
             <q-item-section>
               <q-item-label>{{ entrie.org.friendlyname }}</q-item-label>
               <q-item-label caption> {{ entrie.notes }}</q-item-label>
