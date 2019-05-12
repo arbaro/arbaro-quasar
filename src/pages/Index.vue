@@ -19,8 +19,8 @@
           />
         </q-card-section>
         <q-card-actions align="right" class="text-primary">
-          <q-btn flat label="Cancel" v-close-popup />
-          <q-btn flat label="Donate" @click="donateTrigger" v-close-popup />
+          <q-btn flat label="Cancel" v-close-popup/>
+          <q-btn flat label="Donate" @click="donateTrigger" v-close-popup/>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -52,7 +52,7 @@
           </div>
         </q-card-section>
         <q-card-actions align="right" class="text-primary">
-          <q-btn flat label="Close" v-close-popup />
+          <q-btn flat label="Close" v-close-popup/>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -65,16 +65,11 @@
           </q-card-section>
           <q-card-section>{{ about }}</q-card-section>
 
-          <q-separator dark />
+          <q-separator dark/>
 
           <q-card-actions>
             <q-btn flat @click="aboutPrompt = true">About</q-btn>
-            <q-btn
-              :disable="!$eosio.data.authed"
-              flat
-              @click="donationPrompt = true"
-              >Donate</q-btn
-            >
+            <q-btn :disable="!$eosio.data.authed" flat @click="donationPrompt = true">Donate</q-btn>
             <q-btn flat @click="refresh">Refresh</q-btn>
           </q-card-actions>
         </q-card>
@@ -93,7 +88,7 @@
             <q-item-section>
               <q-chip color="white">
                 <q-avatar v-if="org.pic">
-                  <img :src="org.pic" />
+                  <img :src="org.pic">
                 </q-avatar>
                 {{ org.friendly || org.key }}
               </q-chip>
@@ -112,7 +107,7 @@
             <q-item-section>
               <q-chip color="white">
                 <q-avatar v-if="profile.pic">
-                  <img :src="profile.pic" />
+                  <img :src="profile.pic">
                 </q-avatar>
                 {{ profile.friendly || profile.prof }}
               </q-chip>
@@ -183,12 +178,15 @@ export default {
       if (profileOrgs.length > 0) {
         const blank = [];
         for (var i = 0; i < profileOrgs.length; i++) {
+          let found = false;
           for (var y = 0; y < originalOrgs.length; y++) {
             if (originalOrgs[y].key == profileOrgs[i].prof) {
               blank.push(profileOrgs[i]);
-            } else {
-              blank.push(originalOrgs[y]);
+              found = true;
             }
+          }
+          if (!found) {
+            blank.push(originalOrgs[y]);
           }
         }
         this.orgs = blank.map(org => {
