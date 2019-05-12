@@ -179,7 +179,7 @@ export default {
       this.profiles = result.filter(profile => !profile.isOrg);
       const profileOrgs = result.filter(profile => profile.isOrg);
       const originalOrgs = this.orgs;
-      console.log({ profileOrgs, originalOrgs });
+      console.log(JSON.stringify({ profileOrgs, originalOrgs }));
       if (profileOrgs.length > 0) {
         const blank = [];
         for (var i = 0; i < profileOrgs.length; i++) {
