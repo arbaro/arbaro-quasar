@@ -42,7 +42,10 @@
             <tr v-for="role in roles" :key="role.key">
               <td class="text-left">
                 <q-chip clickable @click="$router.push(`/profile/${role.key}`)">
-                  {{ role.key }}
+                  <q-avatar v-if="role.pic">
+                    <img :src="role.pic" />
+                  </q-avatar>
+                  {{ role.friendly || role.key }}
                 </q-chip>
               </td>
               <td class="text-left">{{ role.payrate }}</td>
@@ -112,6 +115,7 @@ export default {
       await wait(delay);
       await this.fetchTeamMembers();
       await this.fetchOrg();
+      await this.fetchProfilesOfTeamMembers();
       this.$q.loadingBar.stop();
     },
     fetchOrg: async function() {
@@ -174,6 +178,34 @@ export default {
         this.$route.params.account
       );
       this.roles = tableResult.rows;
+    },
+    fetchProfilesOfTeamMembers: async function() {
+      const roles = this.roles;
+      const key = {};
+      for (var i = 0; i < roles.length; i++) {
+        try {
+          const profile = await this.$api.getProfile(roles[i].key);
+          if (profile.friendly && profile.pic) {
+            key[profile.prof] = {
+              friendly: profile.friendly,
+              pic: profile.pic
+            };
+          }
+        } catch (e) {
+          console.log(e);
+        }
+      }
+      this.roles = roles.map(role => {
+        if (key[role.key]) {
+          return {
+            ...role,
+            pic: key[role.key].pic,
+            friendly: key[role.key].friendly
+          };
+        }
+        return role;
+      });
+      console.log(this.roles);
     }
   }
 };
