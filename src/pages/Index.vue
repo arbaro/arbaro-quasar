@@ -171,8 +171,8 @@ export default {
       await this.fetchProfiles();
     },
     async fetchOrgs() {
-      const result = await this.$eos.getTable("orgs");
-      this.orgs = result.rows;
+      // const result = await this.$eos.getTable("orgs");
+      // this.orgs = result.rows;
     },
     async fetchProfiles() {
       const result = await this.$api.getProfiles();
